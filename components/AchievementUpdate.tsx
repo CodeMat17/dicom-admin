@@ -4,9 +4,10 @@ import { createClient } from "@/utils/supabase/client";
 import { Edit3Icon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { sanitizeContent } from "@/utils/sanitizeContent";
 
 type AchievementContent = {
   desc: string;
@@ -39,13 +40,14 @@ const AchievementUpdate = () => {
       const { data, error } = await supabase
         .from("achievements")
         .select("*")
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: false });
 
       if (error) {
         toast("Error!", {
-          description: `${error.message}`,
+          description: error.message,
         });
         setError(error.message);
+        return
       }
 
       // Assuming the structure of data matches Achievement type
@@ -60,7 +62,6 @@ const AchievementUpdate = () => {
       }
     } catch (error) {
       setError("Failed to fetch achievements");
-      console.error("Error fetching achievements:", error);
       toast("Error", {
         description: `Failed to fetch achievements: ${error}`,
       });
@@ -69,35 +70,8 @@ const AchievementUpdate = () => {
     }
   };
 
-  if (loading) return <p className="text-center py-20">Loading achievements...</p>;
-  if (error) return <p className='text-center py-20'>Error: {error}</p>;
-
-  // const updateAchievement = async () => {
-  //   setLoading(true);
-
-  //   try {
-  //     const res = await fetch("/api/achievements/update", {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(data),
-  //     });
-
-  //     const result = await res.json();
-  //     if (result.success) {
-  //       toast("DONE!", {
-  //         description: "Achievements updated successfully",
-  //       });
-  //       console.log("Achievement posted successfully");
-  //     } else {
-  //       console.error("Error:", result.message);
-  //     }
-  //   } catch (error) {
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  if (loading)
+    return <p className='text-center py-20'>Loading achievements...</p>;
 
   return (
     <div className='w-full min-h-screen p-4 bg-gray-50 rounded-xl'>
@@ -109,7 +83,9 @@ const AchievementUpdate = () => {
             key={achievement.id}
             className='relative bg-white p-6 shadow-md rounded-lg border'>
             <h3 className='text-xl font-bold mb-4'>{achievement.title}</h3>
-            <p>{achievement.content.desc}</p>
+            {/* <p>{achievement.content.desc}</p> */}
+
+            <div dangerouslySetInnerHTML={{__html: sanitizeContent(achievement.content.desc)}} />
 
             <div className='flex justify-center'>
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2'>
@@ -126,7 +102,11 @@ const AchievementUpdate = () => {
                 ))}
               </div>
             </div>
-            <Button asChild size='icon' variant='outline' className="absolute top-4 right-4">
+            <Button
+              asChild
+              size='icon'
+              variant='outline'
+              className='absolute top-4 right-4'>
               <Link href={`/private/our-achievements/${achievement.id}`}>
                 <Edit3Icon />
               </Link>
