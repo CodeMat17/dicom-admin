@@ -37,11 +37,11 @@ const EditAchievement = () => {
   const [newImages, setNewImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
 
-  console.log("Title: " + title);
-  console.log("Desc: " + desc);
-  console.log("OriginalImages: " + originalImages);
-  console.log("RemovedImages: " + removedImages);
-  console.log("NewImages: " + newImages);
+  // console.log("Title: " + title);
+  // console.log("Desc: " + desc);
+  // console.log("OriginalImages: " + originalImages);
+  // console.log("RemovedImages: " + removedImages);
+  // console.log("NewImages: " + newImages);
 
   useEffect(() => {
     if (id) {
@@ -259,8 +259,13 @@ const EditAchievement = () => {
           ))}
         </div>
       </div>
-      <Button onClick={handleUpdate} disabled={loading}>
-        {loading ? "Updating..." : "Update Achievement"}
+      <Button
+        disabled
+        // onClick={handleUpdate}
+        // disabled={loading}
+      >
+        Disabled!
+        {/* {loading ? "Updating..." : "Update Achievement"} */}
       </Button>
     </div>
   );

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import QuillEditor from "./QuillEditor";
 
 const AchievementPost = () => {
   const supabase = createClient();
@@ -137,12 +138,18 @@ const AchievementPost = () => {
 
         <div>
           <label className='block mb-2'>Description</label>
-          <Textarea
+          {/* <Textarea
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             placeholder='Enter achievement description'
             required
             className='border-gray-400'
+          /> */}
+
+          <QuillEditor
+            content={desc}
+            onChange={setDesc}
+            // {handleContentChange}
           />
         </div>
 
